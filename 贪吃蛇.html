@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/jquery.js "></script>
+    <script>
+
+        function zengjiaShenTi(top,left){
+            var El = document.createElement("div");
+            El.style = "width:10px;height:10px;background-color:green;position:absolute;left:"+ left+";top:"+ top+";";
+            document.body.appendChild(El);
+            sheShen.push(El);
+        }
+
+        function shiWu(){
+            var El = document.createElement("div");
+            El.style = "width:10px;height:10px;background-color:pink;position:absolute;left:"+ (ran(1, 50) - 1) * 10+"px;top:"+ (ran(1, 50) - 1) * 10+"px;";
+            document.body.appendChild(El);
+            shiWuZuoBiao = El;
+        }
+
+        function ran(min,max){
+            return Math.floor(Math.random() * (max - min) + min)
+        }
+
+        function init(){
+            isDead = false;
+            fangxiang = "右";
+            leftVec = 0;
+            leftMove = 0;
+            topMove = 0;
+            topVec = 0;
+        }
+
+        function game() {
+            if(zanTing == 0){
+                switch (fangxiang) {
+                    case "上":
+                        topVec--;
+                        topMove = topVec * gezi
+                        break;
+                    case "右":
+                        leftVec++;
+                        leftMove = leftVec * gezi
+                        break;
+                    case "下":
+                        topVec++;
+                        topMove = topVec * gezi
+                        break;
+                    case "左":
+                        leftVec--;
+                        leftMove = leftVec * gezi
+                        break;
+                    default:
+                        break;
+                }
+
+                if (topMove == -10) {
+                    isDead = true;
+                    sheShen[0].style.top = "0px";
+                    var gameres = confirm('游戏结束，是否继续？');
+                    if (gameres) {
+                         // 从蛇的屁股开始依次赋值，
+                        for (var i = sheShen.length; i > 0; i--) {
+                            $(sheShen[i]).css({
+                                "top": 0,
+                                "left": i * 10,
+                            })
+                        }
+                        $(sheShen[0]).css({
+                            "top": 0,
+                            "left": 40,
+                        });
+                        init()
+                    }
+                } else if (leftMove == -10) {
+                    isDead = true;
+                    sheShen[0].style.left = "0px";
+                    var gameres = confirm('游戏结束，是否继续？');
+                    if (gameres) {
+                         // 从蛇的屁股开始依次赋值，
+                        for (var i = sheShen.length; i > 0; i--) {
+                            $(sheShen[i]).css({
+                                "top": 0,
+                                "left": i * 10,
+                            })
+                        }
+                        $(sheShen[0]).css({
+                            "top": 0,
+                            "left": 40,
+                        });
+                        init()
+                    }
+                } else if (leftMove > 490) {
+                    isDead = true;
+                    sheShen[0].style.left = "490px";
+                    var gameres = confirm('游戏结束，是否继续？');
+                    if (gameres) {
+                         // 从蛇的屁股开始依次赋值，
+                        for (var i = sheShen.length; i > 0; i--) {
+                            $(sheShen[i]).css({
+                                "top": 0,
+                                "left": i * 10,
+                            })
+                        }
+                        $(sheShen[0]).css({
+                            "top": 0,
+                            "left": 40,
+                        });
+                        init()
+                    }
+                } else if (topMove > 490) {
+                    isDead = true;
+                    sheShen[0].style.top = "490px";
+                    var gameres = confirm('游戏结束，是否继续？');
+                    if (gameres) {
+                         // 从蛇的屁股开始依次赋值，
+                        for (var i = sheShen.length; i > 0; i--) {
+                            $(sheShen[i]).css({
+                                "top": 0,
+                                "left": i * 10,
+                            })
+                        }
+                        $(sheShen[0]).css({
+                            "top": 0,
+                            "left": 40,
+                        });
+                        init()
+                    }
+                }
+                if (isDead) {
+
+                } else {
+                    // 从蛇的屁股开始依次赋值，
+                    for (var i = sheShen.length; i > 0; i--) {
+                        $(sheShen[i]).css({
+                            "top": sheShen[i - 1].style.top,
+                            "left": sheShen[i - 1].style.left,
+                        })
+                    }
+                    $(sheShen[0]).css({
+                        "top": topMove,
+                        "left": leftMove,
+                    });
+                }
+
+                // console.log(sheShen[sheShen.length - 1].style.top);
+                var tou = $(sheShen[0]).get(0).style;
+                var shiwu = shiWuZuoBiao.style;
+                if (tou.top == shiwu.top && tou.left == shiwu.left) {
+                    zengjiaShenTi(sheShen[sheShen.length - 1].style.top, sheShen[sheShen.length - 1].style.left);
+                    shiWuZuoBiao.remove();
+                    shiWu();
+                }
+            }
+        }
+
+        var sheShen = [];//蛇身体的数组
+        var shiWuZuoBiao = {}; //食物的DOM对象
+        var isDead = false; //是否死亡
+        var topVec = 0;// 高度的向量
+        var topMove = 0;// 高度的间距
+        var fangxiang = "右";//默认舌头行走方向
+        var nandu = [{title:'初级',time:500},{title:'中级',time:300},{title:'高级',time:50}];
+        var nanduIndex = 2; //难度索引
+        var gezi = 10;//每次移动10个像素，10个像素为基础
+        var sheTou = null; //全局的蛇头
+        var bgGezi = 50; //背景格子
+        var leftVec = 0; // 蛇头左侧的向量
+        var leftMove = 0; // 蛇头左侧的间距
+        var zanTing = 0;//0执行  1暂停
+        $(document).ready(function(){
+            sheTou = $("#animate1");
+            sheShen[0] = sheTou.get(0); //JQuery对象转换成DOM对象
+            shiWu();
+            zengjiaShenTi(0,0);
+            zengjiaShenTi(0,0);
+            zengjiaShenTi(0,0);
+            // game();
+            $(document).on("keyup", function (e) {
+                var m_e = window.event;
+                var keycode = m_e.which;
+                console.log(keycode)
+                if (keycode === 38) {
+                    fangxiang = "上"
+                } else if (keycode === 40) {
+                    fangxiang = "下"
+                } else if (keycode === 37) {
+                    fangxiang = "左"
+                } else if (keycode === 39) {
+                    fangxiang = "右"
+                }
+            });
+            gameObject = setInterval(game, nandu[nanduIndex].time);
+        });
+    </script>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        .bo{
+            float: left;
+            border:1px solid black;
+        }
+        .shetou{
+            position:absolute;
+            float:left;
+            width:10px;
+            height:10px;
+            top:0px;
+            left:10px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div style="width:500px;height:500px;border:1px solid #666666;">
+        <div class="shetou" id="animate1"></div>
+    </div>
+</body>
+</html>
